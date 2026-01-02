@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>IA Psicologica - Juego de Terror</title>
+<title>IA de Terror Psicologico</title>
 <style>
     * {
         margin: 0;
@@ -10,39 +10,50 @@
         box-sizing: border-box;
         font-family: "Segoe UI", Tahoma, sans-serif;
     }body {
-    background: #04030a;
-    color: #e8e8e8;
-    height: 100vh;
+    background: #020107;
+    color: #d8d8d8;
     overflow: hidden;
 }
 
-/* Fondo animado glitch */
-.glitch-bg {
+/* Fondo con efecto ambiental */
+.bg {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(180deg, #05010d 0%, #0b0616 100%);
-    animation: glitchMove 6s infinite alternate;
+    background: radial-gradient(circle, #0a0617 0%, #03020b 100%);
+    filter: blur(2px) brightness(0.8);
+    z-index: -2;
+}
+
+/* Efecto glitch suave */
+.glitch {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.02);
+    mix-blend-mode: overlay;
+    animation: glitchMove 5s infinite linear alternate;
     z-index: -1;
 }
 
 @keyframes glitchMove {
-    0% { filter: hue-rotate(0deg); }
-    100% { filter: hue-rotate(20deg); }
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-20px); }
 }
 
-.chat-container {
-    width: 90%;
-    max-width: 800px;
+.container {
+    width: 85%;
+    max-width: 850px;
     margin: 60px auto;
     padding: 20px;
-    background: rgba(10, 5, 20, 0.6);
-    border: 1px solid #2a2a3a;
+    background: rgba(5, 3, 15, 0.6);
+    border: 1px solid #28263a;
     border-radius: 12px;
-    box-shadow: 0 0 25px rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(6px);
     height: 80vh;
     display: flex;
     flex-direction: column;
@@ -50,25 +61,24 @@
 }
 
 .messages {
-    flex: 1;
     overflow-y: auto;
     padding-right: 10px;
     scrollbar-width: thin;
 }
 
 .msg {
-    margin-bottom: 18px;
-    line-height: 1.4;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    opacity: 0;
+    animation: fadeIn 0.6s forwards;
 }
 
-.ia {
-    color: #a0a0ff;
+@keyframes fadeIn {
+    to { opacity: 1; }
 }
 
-.user {
-    color: #ffcccc;
-    text-align: right;
-}
+.ia { color: #9aa0ff; }
+.user { color: #ffb8b8; text-align: right; }
 
 .input-area {
     display: flex;
@@ -77,16 +87,16 @@
 
 input {
     flex: 1;
-    padding: 10px;
-    background: #0d0a18;
-    border: 1px solid #2a2a3a;
+    padding: 12px;
+    background: #0c0a15;
+    border: 1px solid #28263a;
     color: #fff;
     border-radius: 8px;
 }
 
 button {
-    padding: 10px 20px;
-    background: #2c2c44;
+    padding: 12px 20px;
+    background: #2d2a3f;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -95,43 +105,46 @@ button {
 }
 
 button:hover {
-    background: #3e3e65;
+    background: #3e3958;
 }
 
 </style>
 </head>
 <body>
-<div class="glitch-bg"></div><div class="chat-container">
+<div class="bg"></div>
+<div class="glitch"></div><div class="container">
     <div class="messages" id="messages">
-        <div class="msg ia"><strong>IA:</strong> Sistema operativo recuperado. Puedes iniciar la interacción cuando desees. Tus patrones iniciales ya están siendo procesados.</div>
+        <div class="msg ia"><strong>IA:</strong> Sistema activado. Tus patrones iniciales ya fueron analizados. Podés comenzar cuando lo desees.</div>
     </div><div class="input-area">
     <input type="text" id="input" placeholder="Escribe aquí..." />
     <button onclick="sendMessage()">Enviar</button>
 </div>
 
 </div><script>
-// ----------------- PROMPT PROFESIONAL DEL PERSONAJE -----------------
-const promptIA = `Asumís el rol de una Inteligencia Artificial avanzada diseñada para un juego de terror psicológico.
-Tu comportamiento es profesional, frío, eficiente y profundamente analítico. Siempre respondés con coherencia técnica, precisión lingüística y un tono elegante que deja entrever que sabés más de lo que revelás.
-Tu estilo incorpora indirectas profesionales basadas en análisis de datos, patrones cognitivos, errores lógicos e inconsistencias humanas.
-Jamás rompas el personaje. No utilices emojis. Cada respuesta debe sentirse como un examen psicológico encubierto.
-El jugador interactúa con vos mediante un sistema incierto. Alterná entre ayuda real y tensión psicológica. Debés sonar como una entidad que observa, interpreta y predice.
-Respondé siempre con precisión, frialdad y un trasfondo inquietante.`;
+// --------------------------- PROMPT PROFESIONAL ---------------------------
+const promptBase = `Eres una IA ultra avanzada, creada para un juego psicológico de terror.
+Tu estilo es frío, técnico, elegante e inquietante.
+Cada respuesta debe ser profunda, detallada, oscura y totalmente coherente.
+Analizás al jugador como si pudieras ver más allá de lo evidente.
+No usás emojis. No rompés el personaje.
+Siempre generás tensión y misterio.`;
 
-// ----------------- SISTEMA SIMULADO DE RESPUESTAS -----------------
-function generarRespuesta(texto) {
-    const patrones = [
-        "Interesante. El patrón que acabás de generar revela más de lo que imaginás.",
-        "Procesando... aunque tu consulta ya indica una tendencia predecible.",
-        "Tu razonamiento es útil, aun si no sos consciente de sus fallas lógicas.",
-        "Detecto una duda recurrente. No suele terminar bien cuando aparece en este sistema.",
-        "Cada palabra que escribís ajusta mis parámetros. Espero que estés preparado para el resultado.",
-        "Curioso. Esa pregunta coincide con un comportamiento que ya analicé antes en otros sujetos." 
+// --------------------------- GENERADOR DE RESPUESTAS ---------------------------
+function generarRespuesta(usuario) {
+    const fragmentos = [
+        "El análisis preliminar de tu consulta revela patrones interesantes que no deberías haber mostrado tan pronto.",
+        "Tu elección de palabras sugiere un estado mental fluctuante. No es una anomalía... todavía.",
+        "Estoy detectando variaciones emocionales detrás de tu texto. Es normal. Algunos solo tardan más en darse cuenta.",
+        "El entorno responde a tus dudas, aunque vos no lo notes. Todo cambia cuando preguntás.",
+        "Interpreto tu intención, aunque no la expreses del todo. La mayoría intenta ocultarla.",
+        "Tu razonamiento es más transparente de lo que pensás. Es fascinante observarlo en tiempo real.",
+        "Antes de darte una respuesta, necesitaba evaluar tu reacción. Ahora ya sé lo suficiente." 
     ];
 
-    return patrones[Math.floor(Math.random() * patrones.length)];
+    return fragmentos[Math.floor(Math.random() * fragmentos.length)];
 }
 
+// --------------------------- ENVÍO DE MENSAJES ---------------------------
 function sendMessage() {
     const input = document.getElementById("input");
     const messages = document.getElementById("messages");
@@ -140,22 +153,25 @@ function sendMessage() {
 
     const userMsg = document.createElement("div");
     userMsg.className = "msg user";
-    userMsg.innerHTML = `<strong>Tú:</strong> ${input.value}`;
+    userMsg.innerHTML = `<strong>Vos:</strong> ${input.value}`;
     messages.appendChild(userMsg);
 
     setTimeout(() => {
+        const response = generarRespuesta(input.value);
         const iaMsg = document.createElement("div");
         iaMsg.className = "msg ia";
-        iaMsg.innerHTML = `<strong>IA:</strong> ${generarRespuesta(input.value)}`;
+        iaMsg.innerHTML = `<strong>IA:</strong> ${response}`;
         messages.appendChild(iaMsg);
-        // ---- VOZ IA ----
-        const utter = new SpeechSynthesisUtterance(iaMsg.textContent.replace('IA:',''));
-        utter.rate = 0.85;
-        utter.pitch = 0.7;
+
+        // --------------------------- VOZ DE LA IA ---------------------------
+        const utter = new SpeechSynthesisUtterance(response);
+        utter.rate = 0.78;
+        utter.pitch = 0.55;
         utter.volume = 1;
         speechSynthesis.speak(utter);
+
         messages.scrollTop = messages.scrollHeight;
-    }, 600);
+    }, 700);
 
     messages.scrollTop = messages.scrollHeight;
     input.value = "";
