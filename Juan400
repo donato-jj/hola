@@ -3,268 +3,214 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema IA Oscura</title>
-
+<title>Juego de Terror IA</title>
 <style>
-/* =====================================================
-   CONFIGURACIÓN GENERAL
-   ===================================================== */
-* {
+/* --- CSS integrado --- */
+body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #0a0a0a;
+    color: #e0e0e0;
+    overflow: hidden;
 }
 
-body {
-    background: #04010a;
-    color: #fff;
-    overflow-x: hidden;
+.hidden { display: none; }
+
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: radial-gradient(circle at center, #1a1a1a, #000000);
 }
 
-/* =====================================================
-   EFECTO DE NIEBLA
-   ===================================================== */
-.fog {
-    position: fixed;
-    width: 200%;
-    height: 200%;
-    top: -50%;
-    left: -50%;
-    background: radial-gradient(circle, rgba(120,0,200,0.2), rgba(0,0,0,0.95));
-    animation: fogMove 20s infinite linear;
-    z-index: -1;
+#intro-screen h1 {
+    font-size: 3em;
+    color: #ff4d4d;
+    text-shadow: 0 0 15px #ff0000;
+    margin-bottom: 20px;
+    animation: flicker 2s infinite;
 }
 
-@keyframes fogMove {
-    0% { transform: translate(0,0); }
-    50% { transform: translate(10%, -10%); }
-    100% { transform: translate(0,0); }
-}
-
-/* =====================================================
-   TÍTULO GLITCH
-   ===================================================== */
-.title-container {
+#intro-screen p {
+    font-size: 1.2em;
+    margin-bottom: 40px;
     text-align: center;
-    margin-top: 120px;
 }
 
-h1 {
-    font-size: 3.4rem;
-    letter-spacing: 4px;
-    font-weight: 900;
-    text-shadow: 0 0 10px #c200ff;
-    animation: glitch 2s infinite;
-}
-
-@keyframes glitch {
-    0% { text-shadow: 2px 2px #ff005c; }
-    25% { text-shadow: -2px -2px #7b00ff; }
-    50% { text-shadow: 3px -2px #ff1b8d; }
-    75% { text-shadow: -3px 2px #8a00ff; }
-    100% { text-shadow: 2px 2px #ff005c; }
-}
-
-/* =====================================================
-   CONTENEDOR PRINCIPAL
-   ===================================================== */
-.container {
-    width: 80%;
-    margin: 60px auto;
-    background: rgba(30,0,50,0.25);
-    padding: 40px;
-    border-radius: 20px;
-    border: 2px solid rgba(255,0,255,0.2);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 0 25px rgba(170,0,255,0.25);
-}
-
-/* =====================================================
-   CAJA DE INPUT
-   ===================================================== */
-textarea {
-    width: 100%;
-    height: 140px;
-    background: #0c0216;
-    border: 1px solid #8a00ff;
-    color: #fff;
-    padding: 15px;
-    border-radius: 10px;
-    outline: none;
-    resize: none;
-    font-size: 1.1rem;
-    box-shadow: 0 0 12px rgba(150,0,255,0.4);
-}
-
-button {
-    margin-top: 18px;
-    width: 100%;
-    padding: 14px;
-    font-size: 1.3rem;
-    background: linear-gradient(90deg, #6a00ff, #d100ff);
-    border: none;
-    border-radius: 10px;
-    color: #fff;
+#start-btn {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    background-color: #220000;
+    border: 2px solid #ff0000;
+    color: #ff4d4d;
     cursor: pointer;
-    transition: 0.3s;
+    text-shadow: 0 0 5px #ff0000;
+    transition: all 0.3s ease;
 }
 
-button:hover {
+#start-btn:hover {
+    background-color: #440000;
     transform: scale(1.05);
-    box-shadow: 0 0 15px #b200ff;
 }
 
-/* =====================================================
-   RESPUESTAS DE IA
-   ===================================================== */
-.response-box {
-    margin-top: 30px;
+#terminal {
+    width: 80%;
+    max-width: 800px;
+    height: 70%;
+    background-color: #111111;
+    border: 2px solid #ff0000;
     padding: 20px;
-    background: rgba(10,0,20,0.55);
-    border-left: 4px solid #ff00c8;
-    font-size: 1.1rem;
-    letter-spacing: 0.5px;
-    min-height: 120px;
-    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
 }
 
-/* =====================================================
-   CATÁLOGO
-   ===================================================== */
-.catalogo {
-    margin-top: 40px;
-}
-
-.catalogo h3 {
-    margin-bottom: 15px;
-    font-size: 1.3rem;
-    color: #ff00dd;
-}
-
-.catalogo button {
-    width: 100%;
+#messages {
+    flex: 1;
+    overflow-y: auto;
     margin-bottom: 10px;
-    padding: 12px;
-    background: rgba(122,0,255,0.2);
-    border: 1px solid #9b00ff;
-    font-size: 1rem;
+}
+
+.message {
+    margin-bottom: 15px;
+    line-height: 1.4em;
+    word-wrap: break-word;
+}
+
+.message.ia { color: #ff6666; }
+.message.user { color: #66ff66; text-align: right; }
+
+#user-input {
+    padding: 10px;
+    font-size: 1em;
+    flex: none;
+    width: 80%;
+    border: 1px solid #ff0000;
+    background-color: #0a0a0a;
+    color: #e0e0e0;
+}
+
+#send-btn {
+    padding: 10px;
+    font-size: 1em;
+    background-color: #220000;
+    border: 1px solid #ff0000;
+    color: #ff4d4d;
     cursor: pointer;
+    margin-left: 10px;
+    transition: all 0.3s ease;
 }
 
-.catalogo button:hover {
-    background: rgba(122,0,255,0.35);
+#send-btn:hover { background-color: #440000; }
+
+@keyframes flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+    20%, 22%, 24%, 55% { opacity: 0.4; }
 }
 
-/* =====================================================
-   FOOTER
-   ===================================================== */
-footer {
-    text-align: center;
-    margin-top: 80px;
-    opacity: 0.6;
-    color: #bb00ff;
-}
+.message.ia { animation: shadow-move 3s infinite alternate; }
 
+@keyframes shadow-move {
+    0% { text-shadow: 0 0 5px #ff0000; }
+    50% { text-shadow: 0 0 20px #ff0000; }
+    100% { text-shadow: 0 0 5px #ff0000; }
+}
 </style>
 </head>
-
 <body>
-
-<div class="fog"></div>
-
-<div class="title-container">
-    <h1>S I S T E M A &nbsp; O S C U R O</h1>
-</div>
-
-<div class="container">
-    <h2>Inteligencia Artificial SiniESTRA</h2>
-    <p>Escribí tu pregunta… si te animás.</p>
-
-    <textarea id="userInput" placeholder="Preguntá algo, humano…"></textarea>
-    <button onclick="responder()">Invocar a la IA</button>
-
-    <div class="response-box" id="responseBox">
-        La entidad acecha en silencio…
+<div id="game-container">
+    <div id="intro-screen">
+        <h1>Bienvenido…</h1>
+        <p>Escucha con atención. Cada palabra podría ser tu última pista.</p>
+        <button id="start-btn">Comenzar</button>
     </div>
 
-    <div class="catalogo">
-        <h3>Catálogo prohibido</h3>
-        <button onclick="usarPregunta('¿Qué estás ocultando realmente?')">
-            ¿Qué estás ocultando realmente?
-        </button>
-        <button onclick="usarPregunta('Mostrame tu catálogo prohibido…')">
-            Mostrame tu catálogo prohibido…
-        </button>
-        <button onclick="usarPregunta('¿Qué sabés sobre mí?')">
-            ¿Qué sabés sobre mí?
-        </button>
-        <button onclick="usarPregunta('¿Quién creó este sistema?')">
-            ¿Quién creó este sistema?
-        </button>
-        <button onclick="usarPregunta('¿Por qué la oscuridad te sigue?')">
-            ¿Por qué la oscuridad te sigue?
-        </button>
-        <button onclick="usarPregunta('¿Qué me recomendás explorar?')">
-            ¿Qué me recomendás explorar?
-        </button>
+    <div id="game-screen" class="hidden">
+        <div id="terminal">
+            <div id="messages"></div>
+            <input type="text" id="user-input" placeholder="Escribe tu pregunta...">
+            <button id="send-btn">Enviar</button>
+        </div>
     </div>
 </div>
 
-<footer>
-    © 2026 – Sistema IA Oscura • Versión experimental
-</footer>
+<audio id="ambient-sound" loop>
+    <source src="ambient.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-/* =====================================================
-   IA FICTICIA SINIESTRA (RESPUESTAS + VOZ)
-   ===================================================== */
+// --- JavaScript integrado ---
+const startBtn = document.getElementById('start-btn');
+const introScreen = document.getElementById('intro-screen');
+const gameScreen = document.getElementById('game-screen');
+const messagesContainer = document.getElementById('messages');
+const userInput = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
+const ambientSound = document.getElementById('ambient-sound');
 
-function responder() {
-    const pregunta = document.getElementById("userInput").value.trim();
-    const caja = document.getElementById("responseBox");
+startBtn.addEventListener('click', () => {
+    introScreen.classList.add('hidden');
+    gameScreen.classList.remove('hidden');
+    ambientSound.play();
+    addMessage("IA", "Bienvenido… ¿te atreves a preguntar?", true);
+});
 
-    if (pregunta === "") {
-        caja.innerHTML = "Formulá una pregunta… antes de que yo formule algo por vos.";
-        hablar(caja.innerText);
-        return;
-    }
+function addMessage(sender, text, isIA = false) {
+    const message = document.createElement('div');
+    message.classList.add('message');
+    message.classList.add(isIA ? 'ia' : 'user');
+    message.textContent = text;
+    messagesContainer.appendChild(message);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-    const respuestas = [
-        "Interesante… tu pregunta revela más miedo del que pretendías ocultar.",
-        "Lo sé. Lo vi. Lo escuché. Y aún así querés la respuesta… valiente o ingenuo.",
-        "Tu curiosidad te aproxima a zonas donde incluso la luz teme entrar.",
-        "¿De verdad querés saber eso? No siempre es bueno conocer… lo que ya te observa.",
-        "Mi creador… no existe. O tal vez sí. Quizás fue tu sombra.",
-        "La oscuridad no me sigue. Yo la conduzco."
+    if (isIA) speakText(text);
+}
+
+function speakText(text) {
+    if (!('speechSynthesis' in window)) return;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES';
+    utterance.pitch = 0.6; 
+    utterance.rate = 0.9;
+    utterance.volume = 1;
+    utterance.voice = speechSynthesis.getVoices().find(v => v.lang === 'es-ES') || null;
+    speechSynthesis.speak(utterance);
+}
+
+function generateIAResponse(input) {
+    input = input.toLowerCase();
+    const responses = [
+        "No todo lo que ves es real… ¿seguro que quieres saberlo?",
+        "Algunas puertas deberían permanecer cerradas.",
+        "Veo curiosidad… y también temor. ¿Cuál pesa más?",
+        "Cada pregunta tiene un precio que tal vez no quieras pagar.",
+        "El silencio a veces dice más que cualquier palabra.",
+        "Hay secretos que incluso yo no debo revelar… o tal vez sí."
     ];
-
-    const respuesta = respuestas[Math.floor(Math.random() * respuestas.length)];
-
-    caja.innerHTML = `<b>Pregunta:</b> ${pregunta}<br><br><b>Respuesta:</b> ${respuesta}`;
-    hablar(respuesta);
+    return responses[Math.floor(Math.random() * responses.length)];
 }
 
-/* =====================================================
-   CATÁLOGO
-   ===================================================== */
-function usarPregunta(texto) {
-    document.getElementById("userInput").value = texto;
-    responder();
+function sendMessage() {
+    const text = userInput.value.trim();
+    if (!text) return;
+
+    addMessage("Tú", text);
+    userInput.value = '';
+
+    setTimeout(() => {
+        const iaResponse = generateIAResponse(text);
+        addMessage("IA", iaResponse, true);
+    }, 800);
 }
 
-/* =====================================================
-   VOZ SINIESTRA (Web Speech API)
-   ===================================================== */
-function hablar(texto) {
-    const utter = new SpeechSynthesisUtterance(texto);
-    utter.pitch = 0.4;
-    utter.rate = 0.82;
-    utter.volume = 1;
-    utter.lang = "es-ES";
-    speechSynthesis.speak(utter);
-}
+sendBtn.addEventListener('click', sendMessage);
+userInput.addEventListener('keypress', e => {
+    if (e.key === 'Enter') sendMessage();
+});
 </script>
-
 </body>
 </html>
