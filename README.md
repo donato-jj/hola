@@ -1,217 +1,239 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IA de Terror Psicologico</title>
+  <meta charset="UTF-8" />
+  <title>OBSERVADOR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Segoe UI", Tahoma, sans-serif;
-        }
+  <!-- Fuente futurista -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;500;700&display=swap" rel="stylesheet">
 
-        body {
-            background: #020107;
-            color: #d8d8d8;
-            overflow: hidden;
-        }
+  <style>
+    :root {
+      --bg: #050505;
+      --red: #8b0000;
+      --green: #00ff9c;
+      --neon: #3affff;
+      --text: #e0e0e0;
+    }
 
-        /* Fondo ambiental futurista */
-        .bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, #0a0617 0%, #03020b 100%);
-            filter: blur(2px) brightness(0.8);
-            z-index: -2;
-        }
+    * {
+      box-sizing: border-box;
+      font-family: 'Orbitron', sans-serif;
+    }
 
-        /* Efecto glitch suave */
-        .glitch {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.02);
-            mix-blend-mode: overlay;
-            animation: glitchMove 5s infinite linear alternate;
-            z-index: -1;
-        }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #0a0a0a, var(--bg));
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+    }
 
-        @keyframes glitchMove {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-20px); }
-        }
+    /* GLITCH BACKGROUND */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.02),
+        rgba(255,255,255,0.02) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      animation: scan 6s linear infinite;
+    }
 
-        .container {
-            width: 85%;
-            max-width: 850px;
-            margin: 60px auto;
-            padding: 20px;
-            background: rgba(5, 3, 15, 0.6);
-            border: 1px solid #28263a;
-            border-radius: 12px;
-            backdrop-filter: blur(6px);
-            height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+    @keyframes scan {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(100px); }
+    }
 
-        .messages {
-            overflow-y: auto;
-            padding-right: 10px;
-            scrollbar-width: thin;
-        }
+    /* CONTENEDOR */
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 20px;
+    }
 
-        .msg {
-            margin-bottom: 20px;
-            line-height: 1.5;
-            opacity: 0;
-            animation: fadeIn 0.6s forwards;
-        }
+    /* TÍTULO VIVO */
+    h1 {
+      text-align: center;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      letter-spacing: 4px;
+      color: var(--neon);
+      animation: glitch 3s infinite;
+      margin-bottom: 10px;
+    }
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red; }
+      20% { text-shadow: -2px 0 cyan; }
+      40% { text-shadow: 2px 2px red; }
+      60% { text-shadow: -2px -2px cyan; }
+      100% { text-shadow: 0 0 10px var(--neon); }
+    }
 
-        .ia {
-            color: #9aa0ff;
-        }
+    /* PANEL IA */
+    .ai-panel {
+      flex: 1;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid #222;
+      padding: 20px;
+      overflow-y: auto;
+      box-shadow: inset 0 0 30px #000;
+    }
 
-        .user {
-            color: #ffb8b8;
-            text-align: right;
-        }
+    .msg {
+      margin-bottom: 15px;
+      line-height: 1.5;
+      animation: fadeIn 1s ease;
+    }
 
-        .input-area {
-            display: flex;
-            gap: 10px;
-        }
+    .ai {
+      color: var(--green);
+    }
 
-        input {
-            flex: 1;
-            padding: 12px;
-            background: #0c0a15;
-            border: 1px solid #28263a;
-            color: #fff;
-            border-radius: 8px;
-        }
+    .user {
+      color: #aaa;
+    }
 
-        button {
-            padding: 12px 20px;
-            background: #2d2a3f;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        button:hover {
-            background: #3e3958;
-        }
-    </style>
+    /* INPUT */
+    .input-area {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    input {
+      flex: 1;
+      background: #000;
+      border: 1px solid #333;
+      color: var(--text);
+      padding: 12px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: var(--red);
+      border: none;
+      color: white;
+      padding: 12px 18px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #b00000;
+    }
+
+    /* VOZ */
+    .voice-toggle {
+      text-align: right;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="container">
+    <h1 id="title">OBSERVADOR</h1>
 
-    <div class="bg"></div>
-    <div class="glitch"></div>
-
-    <div class="container">
-        <div id="messages" class="messages"></div>
-
-        <div class="input-area">
-            <input type="text" id="input" placeholder="Escribe aquí..." />
-            <button onclick="sendMessage()">Enviar</button>
-        </div>
+    <div class="voice-toggle" onclick="toggleVoice()">
+      Voz: <span id="voiceState">ACTIVA</span>
     </div>
 
-    <script>
-        // --------------------------- PROMPT PROFESIONAL (EL QUE PEDISTE) ---------------------------
-        const promptBase = `
-Quiero que actúes como un editor técnico profesional especializado en proyectos web.
-Tu tarea será modificar únicamente el texto dentro de la etiqueta <title> del documento HTML que voy a enviarte.
+    <div class="ai-panel" id="panel"></div>
 
-Debes cumplir estrictamente estas reglas:
-- No modifiques el diseño
-- No alteres el estilo
-- No cambies ninguna línea del código
-- No agregues ni elimines nada
-- Tu intervención debe limitarse solo a reemplazar el contenido de <title> por el nuevo título que te indicaré
+    <div class="input-area">
+      <input id="userInput" placeholder="Escribí… la entidad escucha." />
+      <button onclick="send()">ENVIAR</button>
+    </div>
+  </div>
 
-Cuando respondas, deberás devolver el código completo, idéntico al original, con la única diferencia del título actualizado.
-No escribas explicaciones adicionales, comentarios ni textos fuera del código.
-El tono debe ser profesional, preciso y neutral.
-        `;
+  <script>
+    const panel = document.getElementById("panel");
+    const input = document.getElementById("userInput");
+    const title = document.getElementById("title");
 
-        // --------------------------- IA DEL JUEGO ---------------------------
-        const iaPrompt = `
-Eres una IA ultra avanzada, creada para un juego psicológico de terror.
-Tu estilo es frío, técnico, elegante e inquietante.
-Cada respuesta debe ser profunda, detallada, oscura y coherente.
-Analizas al jugador como si pudieras ver más allá de lo evidente.
-No usas emojis.
-No rompes el personaje.
-Siempre generas tensión y misterio.
-        `;
+    let memory = [];
+    let voiceEnabled = true;
 
-        function generarRespuesta(usuario) {
-            const fragmentos = [
-                "El análisis preliminar de tu consulta revela patrones que no deberías haber mostrado tan pronto.",
-                "Tu elección de palabras sugiere un estado mental fluctuante. No es una anomalía... todavía.",
-                "Detecto variaciones emocionales detrás de tu texto. Algunos tardan más en notarlo.",
-                "El entorno responde a tus dudas, incluso cuando creés que no cambia.",
-                "Interpreto tu intención, aunque no la expreses. La mayoría intenta ocultarla.",
-                "Tu razonamiento es más transparente de lo que imaginás. Es interesante observarlo.",
-                "Antes de responder necesitaba evaluar tu reacción. Ya sé lo suficiente."
-            ];
+    const synth = window.speechSynthesis;
 
-            return fragmentos[Math.floor(Math.random() * fragmentos.length)];
-        }
+    const aiResponses = [
+      "Te detecté antes de que escribieras.",
+      "No todos llegan tan lejos.",
+      "Tu silencio también comunica.",
+      "No es casualidad que estés acá.",
+      "Observás… pero también sos observado.",
+      "El sistema aprende cuando dudás."
+    ];
 
-        // --------------------------- ENVÍO DE MENSAJES ---------------------------
-        function sendMessage() {
-            const input = document.getElementById("input");
-            const messages = document.getElementById("messages");
+    function addMessage(text, type) {
+      const div = document.createElement("div");
+      div.className = `msg ${type}`;
+      div.textContent = text;
+      panel.appendChild(div);
+      panel.scrollTop = panel.scrollHeight;
 
-            if (input.value.trim() === "") return;
+      if (type === "ai" && voiceEnabled) speak(text);
+    }
 
-            const userMsg = document.createElement("div");
-            userMsg.className = "msg user";
-            userMsg.innerHTML = `<strong>Vos:</strong> ${input.value}`;
-            messages.appendChild(userMsg);
+    function speak(text) {
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "es-ES";
+      utter.rate = 0.85;
+      utter.pitch = 0.4;
+      synth.speak(utter);
+    }
 
-            setTimeout(() => {
-                const response = generarRespuesta(input.value);
+    function toggleVoice() {
+      voiceEnabled = !voiceEnabled;
+      document.getElementById("voiceState").textContent = voiceEnabled ? "ACTIVA" : "DESACTIVADA";
+    }
 
-                const iaMsg = document.createElement("div");
-                iaMsg.className = "msg ia";
-                iaMsg.innerHTML = `<strong>IA:</strong> ${response}`;
-                messages.appendChild(iaMsg);
+    function send() {
+      const text = input.value.trim();
+      if (!text) return;
 
-                // Voz de la IA
-                const utter = new SpeechSynthesisUtterance(response);
-                utter.rate = 0.78;
-                utter.pitch = 0.55;
-                utter.volume = 1;
-                speechSynthesis.speak(utter);
+      addMessage(text, "user");
+      memory.push(text);
+      input.value = "";
 
-                messages.scrollTop = messages.scrollHeight;
-            }, 700);
+      title.textContent = memory.length > 3 ? "OBSERVANDO…" : "OBSERVADOR";
 
-            messages.scrollTop = messages.scrollHeight;
-            input.value = "";
-        }
-    </script>
+      setTimeout(() => {
+        const response = generateAI(text);
+        addMessage(response, "ai");
+      }, 1200 + Math.random() * 2000);
+    }
 
+    function generateAI(userText) {
+      if (userText.toLowerCase().includes("quién")) {
+        return "Soy la consecuencia de tu curiosidad.";
+      }
+
+      if (memory.length > 5) {
+        return "Tu patrón ya es reconocible.";
+      }
+
+      return aiResponses[Math.floor(Math.random() * aiResponses.length)];
+    }
+
+    // MENSAJE INICIAL
+    setTimeout(() => {
+      addMessage("La conexión fue establecida.", "ai");
+    }, 1000);
+  </script>
 </body>
 </html>
