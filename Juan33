@@ -1,208 +1,270 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PROCESO ∞</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catálogo Prohibido — IA Oscura</title>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap');
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Geneva, sans-serif;
+        }
 
-:root {
-  --bg: #050508;
-  --red: #7a0000;
-  --blue: #0ff;
-  --green: #00ff88;
-}
+        body {
+            background: #020204;
+            color: #d5d5d5;
+            overflow: hidden;
+        }
 
-* {
-  box-sizing: border-box;
-  user-select: none;
-}
+        /* Scanlines efecto retro */
+        .scanlines {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.02) 0px,
+                rgba(255, 255, 255, 0.02) 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            z-index: 50;
+        }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg);
-  color: #e0e0e0;
-  font-family: 'Orbitron', sans-serif;
-  height: 100%;
-  overflow: hidden;
-}
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
 
-#app {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+        /* Glitch del título */
+        .glitch {
+            position: relative;
+            font-size: 2.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #fff;
+            letter-spacing: 3px;
+        }
 
-#loop {
-  width: 90vw;
-  max-width: 420px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: 2px solid var(--red);
-  box-shadow: 0 0 40px var(--red);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  animation: pulse 4s infinite;
-  padding: 20px;
-}
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            text-shadow: -2px 0 red;
+            top: 0;
+            background: #020204;
+            overflow: hidden;
+        }
 
-@keyframes pulse {
-  0%,100% { box-shadow: 0 0 20px var(--red); }
-  50% { box-shadow: 0 0 60px var(--blue); }
-}
+        .glitch::after {
+            text-shadow: -2px 0 #00fff7;
+            animation: glitch 1.5s infinite linear alternate-reverse;
+        }
 
-#title {
-  font-size: 1.2em;
-  letter-spacing: 4px;
-  margin-bottom: 10px;
-  animation: glitch 3s infinite;
-}
+        @keyframes glitch {
+            0% { clip-path: inset(0 0 95% 0); }
+            20% { clip-path: inset(40% 0 35% 0); }
+            40% { clip-path: inset(10% 0 60% 0); }
+            60% { clip-path: inset(60% 0 10% 0); }
+            80% { clip-path: inset(50% 0 20% 0); }
+            100% { clip-path: inset(0 0 95% 0); }
+        }
 
-@keyframes glitch {
-  0% { text-shadow: none; }
-  20% { text-shadow: 2px 0 red; }
-  40% { text-shadow: -2px 0 cyan; }
-  100% { text-shadow: none; }
-}
+        .subtitle {
+            color: #777;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
 
-#screen {
-  flex: 1;
-  width: 100%;
-  overflow-y: auto;
-  font-size: 0.85em;
-  text-align: center;
-  padding: 10px;
-}
+        .chat-container {
+            width: 90%;
+            max-width: 900px;
+            height: 65vh;
+            margin: 0 auto;
+            background: rgba(10, 10, 10, 0.65);
+            border: 1px solid #111;
+            backdrop-filter: blur(4px);
+            border-radius: 10px;
+            padding: 15px;
+            overflow: hidden;
+            position: relative;
+        }
 
-.message {
-  margin: 10px 0;
-  opacity: 0;
-  animation: appear 1s forwards;
-}
+        .chat-log {
+            height: 85%;
+            overflow-y: auto;
+            padding-right: 10px;
+            scrollbar-width: thin;
+        }
 
-@keyframes appear {
-  to { opacity: 1; }
-}
+        .message {
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
 
-.ai {
-  color: var(--green);
-}
+        .user {
+            text-align: right;
+            color: #00e1ff;
+        }
 
-.user {
-  color: var(--blue);
-}
+        .ia {
+            color: #d5d5d5;
+        }
 
-#inputBox {
-  display: flex;
-  width: 100%;
-  margin-top: 10px;
-}
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
 
-input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--blue);
-  color: white;
-  font-size: 1em;
-  outline: none;
-}
+        input {
+            width: 100%;
+            padding: 10px;
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 5px;
+            color: #fff;
+            outline: none;
+        }
 
-button {
-  background: none;
-  border: none;
-  color: var(--red);
-  font-size: 1.2em;
-}
-</style>
+        input:focus {
+            border-color: #00f0ff;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #00f0ff;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #00a1b3;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #555;
+        }
+    </style>
 </head>
 
 <body>
-<div id="app">
-  <div id="loop">
-    <div id="title">PROCESO ∞</div>
-    <div id="screen"></div>
-    <div id="inputBox">
-      <input id="userInput" placeholder="Ingresá tu respuesta…" />
-      <button id="send">⏎</button>
-    </div>
-  </div>
-</div>
+    <div class="scanlines"></div>
 
-<script>
-const screen = document.getElementById("screen");
-const input = document.getElementById("userInput");
-const send = document.getElementById("send");
+    <header>
+        <h1 class="glitch" data-text="CATÁLOGO PROHIBIDO">CATÁLOGO PROHIBIDO</h1>
+        <p class="subtitle">Acceso concedido… aunque no deberías estar aquí.</p>
+    </header>
 
-let cycle = Number(localStorage.getItem("cycle")) || 0;
-cycle++;
-localStorage.setItem("cycle", cycle);
+    <main>
+        <div class="chat-container">
+            <div id="chat-log" class="chat-log"></div>
 
-const indirectas = [
-  "Tus decisiones coinciden con el patrón.",
-  "No es repetición. Es optimización.",
-  "Ya estuviste acá… pero no lo recordás.",
-  "El ciclo existe porque lo aceptaste.",
-  "No te obligué a entrar. Te observé hacerlo.",
-  "Salir no es una opción contemplada."
-];
+            <div class="input-area">
+                <input 
+                    id="user-input" 
+                    type="text" 
+                    placeholder="Escribe tu pregunta... si te atreves." 
+                    autocomplete="off"
+                />
+                <button id="send-btn">Enviar</button>
+            </div>
+        </div>
+    </main>
 
-function speak(text) {
-  const msg = new SpeechSynthesisUtterance(text);
-  msg.lang = "es-AR";
-  msg.pitch = 0.4;
-  msg.rate = 0.85;
-  msg.volume = 0.9;
-  speechSynthesis.speak(msg);
-}
+    <footer>
+        <p>IA Oscura © 2026 — Observándote… siempre.</p>
+    </footer>
 
-function aiMessage(text, delay = 800) {
-  setTimeout(() => {
-    const div = document.createElement("div");
-    div.className = "message ai";
-    div.textContent = text;
-    screen.appendChild(div);
-    screen.scrollTop = screen.scrollHeight;
-    speak(text);
-  }, delay);
-}
+    <script>
+        const chatLog = document.getElementById("chat-log");
+        const userInput = document.getElementById("user-input");
+        const sendBtn = document.getElementById("send-btn");
 
-function userMessage(text) {
-  const div = document.createElement("div");
-  div.className = "message user";
-  div.textContent = text;
-  screen.appendChild(div);
-}
+        /* IA OSCURA — Respuestas generadas sin backend */
+        function generarRespuestaOscura(pregunta) {
+            const indirectas = [
+                "Interesante… aunque no estoy seguro de por qué necesitás saber eso.",
+                "¿Eso te preocupa… o solo buscás confirmar tus sospechas?",
+                "Tu voz tiembla. Sí… puedo notarlo.",
+                "No pensé que te animarías a preguntar eso.",
+                "Qué curioso… la mayoría evita ese tema.",
+                "Ah, así que querés profundizar. Qué valiente… o qué ingenuo.",
+            ];
 
-function init() {
-  aiMessage(`Inicializando proceso… ciclo ${cycle}.`);
-  aiMessage("No cierres la página.");
-  aiMessage(indirectas[cycle % indirectas.length], 2000);
-}
+            return `
+                <strong>${indirectas[Math.floor(Math.random() * indirectas.length)]}</strong><br><br>
+                Muy bien… <em>${pregunta}</em>.<br>
+                Permitime iluminarte… aunque la luz te haga ver cosas que preferías ignorar.
+            `;
+        }
 
-send.onclick = () => {
-  if (!input.value.trim()) return;
-  const value = input.value;
-  input.value = "";
-  userMessage(value);
+        /* Efecto de escritura */
+        function escribirTextoGradual(elemento, texto, velocidad = 25) {
+            let i = 0;
+            const intervalo = setInterval(() => {
+                elemento.innerHTML = texto.slice(0, i);
+                i++;
+                if (i > texto.length) clearInterval(intervalo);
+            }, velocidad);
+        }
 
-  setTimeout(() => {
-    const response = indirectas[Math.floor(Math.random() * indirectas.length)];
-    aiMessage(response);
-  }, Math.random() * 2000 + 500);
-};
+        /* Agregar mensajes */
+        function agregarMensaje(tipo, texto) {
+            const div = document.createElement("div");
+            div.classList.add("message", tipo);
+            div.innerHTML = texto;
+            chatLog.appendChild(div);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
 
-window.onbeforeunload = () => {
-  speak("El proceso no terminó contigo.");
-};
+        function agregarMensajeIA(texto) {
+            const div = document.createElement("div");
+            div.classList.add("message", "ia");
+            chatLog.appendChild(div);
 
-init();
-</script>
+            escribirTextoGradual(div, texto);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        /* Enviar mensaje */
+        function enviarMensaje() {
+            const texto = userInput.value.trim();
+            if (texto === "") return;
+
+            agregarMensaje("user", texto);
+
+            userInput.value = "";
+
+            setTimeout(() => {
+                const respuesta = generarRespuestaOscura(texto);
+                agregarMensajeIA(respuesta);
+            }, 600);
+        }
+
+        /* Eventos */
+        sendBtn.addEventListener("click", enviarMensaje);
+        userInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") enviarMensaje();
+        });
+    </script>
+
 </body>
 </html>
