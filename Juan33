@@ -1,240 +1,208 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>OBSERVADOR</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROCESO ∞</title>
 
-  <!-- Fuente futurista -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap');
 
-  <style>
-    :root {
-      --bg: #050505;
-      --red: #8b0000;
-      --green: #00ff9c;
-      --neon: #3affff;
-      --text: #e0e0e0;
-    }
+:root {
+  --bg: #050508;
+  --red: #7a0000;
+  --blue: #0ff;
+  --green: #00ff88;
+}
 
-    * {
-      box-sizing: border-box;
-      font-family: 'Orbitron', sans-serif;
-    }
+* {
+  box-sizing: border-box;
+  user-select: none;
+}
 
-    body {
-      margin: 0;
-      background: radial-gradient(circle at top, #0a0a0a, var(--bg));
-      color: var(--text);
-      height: 100vh;
-      overflow: hidden;
-    }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: #e0e0e0;
+  font-family: 'Orbitron', sans-serif;
+  height: 100%;
+  overflow: hidden;
+}
 
-    /* GLITCH BACKGROUND */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        rgba(255,255,255,0.02),
-        rgba(255,255,255,0.02) 1px,
-        transparent 1px,
-        transparent 2px
-      );
-      pointer-events: none;
-      animation: scan 6s linear infinite;
-    }
+#app {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    @keyframes scan {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(100px); }
-    }
+#loop {
+  width: 90vw;
+  max-width: 420px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid var(--red);
+  box-shadow: 0 0 40px var(--red);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: pulse 4s infinite;
+  padding: 20px;
+}
 
-    /* CONTENEDOR */
-    .container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      padding: 20px;
-    }
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 20px var(--red); }
+  50% { box-shadow: 0 0 60px var(--blue); }
+}
 
-    /* TÍTULO VIVO */
-    h1 {
-      text-align: center;
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      letter-spacing: 4px;
-      color: var(--neon);
-      animation: glitch 3s infinite;
-      margin-bottom: 10px;
-    }
+#title {
+  font-size: 1.2em;
+  letter-spacing: 4px;
+  margin-bottom: 10px;
+  animation: glitch 3s infinite;
+}
 
-    @keyframes glitch {
-      0% { text-shadow: 2px 0 red; }
-      20% { text-shadow: -2px 0 cyan; }
-      40% { text-shadow: 2px 2px red; }
-      60% { text-shadow: -2px -2px cyan; }
-      100% { text-shadow: 0 0 10px var(--neon); }
-    }
+@keyframes glitch {
+  0% { text-shadow: none; }
+  20% { text-shadow: 2px 0 red; }
+  40% { text-shadow: -2px 0 cyan; }
+  100% { text-shadow: none; }
+}
 
-    /* PANEL IA */
-    .ai-panel {
-      flex: 1;
-      background: rgba(0,0,0,0.7);
-      border: 1px solid #222;
-      padding: 20px;
-      overflow-y: auto;
-      box-shadow: inset 0 0 30px #000;
-    }
+#screen {
+  flex: 1;
+  width: 100%;
+  overflow-y: auto;
+  font-size: 0.85em;
+  text-align: center;
+  padding: 10px;
+}
 
-    .msg {
-      margin-bottom: 15px;
-      line-height: 1.5;
-      animation: fadeIn 1s ease;
-    }
+.message {
+  margin: 10px 0;
+  opacity: 0;
+  animation: appear 1s forwards;
+}
 
-    .ai {
-      color: var(--green);
-    }
+@keyframes appear {
+  to { opacity: 1; }
+}
 
-    .user {
-      color: #aaa;
-    }
+.ai {
+  color: var(--green);
+}
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+.user {
+  color: var(--blue);
+}
 
-    /* INPUT */
-    .input-area {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
+#inputBox {
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+}
 
-    input {
-      flex: 1;
-      background: #000;
-      border: 1px solid #333;
-      color: var(--text);
-      padding: 12px;
-      font-size: 1rem;
-    }
+input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--blue);
+  color: white;
+  font-size: 1em;
+  outline: none;
+}
 
-    button {
-      background: var(--red);
-      border: none;
-      color: white;
-      padding: 12px 18px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #b00000;
-    }
-
-    /* VOZ */
-    .voice-toggle {
-      text-align: right;
-      font-size: 0.8rem;
-      opacity: 0.7;
-      cursor: pointer;
-    }
-  </style>
+button {
+  background: none;
+  border: none;
+  color: var(--red);
+  font-size: 1.2em;
+}
+</style>
 </head>
 
 <body>
-  <div class="container">
-    <h1 id="title">OBSERVADOR</h1>
-
-    <div class="voice-toggle" onclick="toggleVoice()">
-      Voz: <span id="voiceState">ACTIVA</span>
-    </div>
-
-    <div class="ai-panel" id="panel"></div>
-
-    <div class="input-area">
-      <input id="userInput" placeholder="Escribí… la entidad escucha." />
-      <button onclick="send()">ENVIAR</button>
+<div id="app">
+  <div id="loop">
+    <div id="title">PROCESO ∞</div>
+    <div id="screen"></div>
+    <div id="inputBox">
+      <input id="userInput" placeholder="Ingresá tu respuesta…" />
+      <button id="send">⏎</button>
     </div>
   </div>
+</div>
 
-  <script>
-    const panel = document.getElementById("panel");
-    const input = document.getElementById("userInput");
-    const title = document.getElementById("title");
+<script>
+const screen = document.getElementById("screen");
+const input = document.getElementById("userInput");
+const send = document.getElementById("send");
 
-    let memory = [];
-    let voiceEnabled = true;
+let cycle = Number(localStorage.getItem("cycle")) || 0;
+cycle++;
+localStorage.setItem("cycle", cycle);
 
-    const synth = window.speechSynthesis;
+const indirectas = [
+  "Tus decisiones coinciden con el patrón.",
+  "No es repetición. Es optimización.",
+  "Ya estuviste acá… pero no lo recordás.",
+  "El ciclo existe porque lo aceptaste.",
+  "No te obligué a entrar. Te observé hacerlo.",
+  "Salir no es una opción contemplada."
+];
 
-    const aiResponses = [
-      "Te detecté antes de que escribieras.",
-      "No todos llegan tan lejos.",
-      "Tu silencio también comunica.",
-      "No es casualidad que estés acá.",
-      "Observás… pero también sos observado.",
-      "El sistema aprende cuando dudás."
-    ];
+function speak(text) {
+  const msg = new SpeechSynthesisUtterance(text);
+  msg.lang = "es-AR";
+  msg.pitch = 0.4;
+  msg.rate = 0.85;
+  msg.volume = 0.9;
+  speechSynthesis.speak(msg);
+}
 
-    function addMessage(text, type) {
-      const div = document.createElement("div");
-      div.className = `msg ${type}`;
-      div.textContent = text;
-      panel.appendChild(div);
-      panel.scrollTop = panel.scrollHeight;
+function aiMessage(text, delay = 800) {
+  setTimeout(() => {
+    const div = document.createElement("div");
+    div.className = "message ai";
+    div.textContent = text;
+    screen.appendChild(div);
+    screen.scrollTop = screen.scrollHeight;
+    speak(text);
+  }, delay);
+}
 
-      if (type === "ai" && voiceEnabled) speak(text);
-    }
+function userMessage(text) {
+  const div = document.createElement("div");
+  div.className = "message user";
+  div.textContent = text;
+  screen.appendChild(div);
+}
 
-    function speak(text) {
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = "es-ES";
-      utter.rate = 0.85;
-      utter.pitch = 0.4;
-      synth.speak(utter);
-    }
+function init() {
+  aiMessage(`Inicializando proceso… ciclo ${cycle}.`);
+  aiMessage("No cierres la página.");
+  aiMessage(indirectas[cycle % indirectas.length], 2000);
+}
 
-    function toggleVoice() {
-      voiceEnabled = !voiceEnabled;
-      document.getElementById("voiceState").textContent = voiceEnabled ? "ACTIVA" : "DESACTIVADA";
-    }
+send.onclick = () => {
+  if (!input.value.trim()) return;
+  const value = input.value;
+  input.value = "";
+  userMessage(value);
 
-    function send() {
-      const text = input.value.trim();
-      if (!text) return;
+  setTimeout(() => {
+    const response = indirectas[Math.floor(Math.random() * indirectas.length)];
+    aiMessage(response);
+  }, Math.random() * 2000 + 500);
+};
 
-      addMessage(text, "user");
-      memory.push(text);
-      input.value = "";
+window.onbeforeunload = () => {
+  speak("El proceso no terminó contigo.");
+};
 
-      title.textContent = memory.length > 3 ? "OBSERVANDO…" : "OBSERVADOR";
-
-      setTimeout(() => {
-        const response = generateAI(text);
-        addMessage(response, "ai");
-      }, 1200 + Math.random() * 2000);
-    }
-
-    function generateAI(userText) {
-      if (userText.toLowerCase().includes("quién")) {
-        return "Soy la consecuencia de tu curiosidad.";
-      }
-
-      if (memory.length > 5) {
-        return "Tu patrón ya es reconocible.";
-      }
-
-      return aiResponses[Math.floor(Math.random() * aiResponses.length)];
-    }
-
-    // MENSAJE INICIAL
-    setTimeout(() => {
-      addMessage("La conexión fue establecida.", "ai");
-    }, 1000);
-  </script>
+init();
+</script>
 </body>
 </html>
