@@ -1,227 +1,164 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Silencio en la Habitación</title>
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IA Psicologica - Juego de Terror</title>
 <style>
     * {
-        margin: 0; padding: 0;
+        margin: 0;
+        padding: 0;
         box-sizing: border-box;
-        font-family: "Inter", sans-serif;
-    }
+        font-family: "Segoe UI", Tahoma, sans-serif;
+    }body {
+    background: #04030a;
+    color: #e8e8e8;
+    height: 100vh;
+    overflow: hidden;
+}
 
-    body {
-        background: #000;
-        overflow: hidden;
-    }
+/* Fondo animado glitch */
+.glitch-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #05010d 0%, #0b0616 100%);
+    animation: glitchMove 6s infinite alternate;
+    z-index: -1;
+}
 
-    /* Fondo oscuro con ruido */
-    .background {
-        position: fixed;
-        inset: 0;
-        background: url('conejo.jpg') center/cover no-repeat;
-        filter: brightness(0.35) blur(2px);
-        z-index: -2;
-    }
+@keyframes glitchMove {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(20deg); }
+}
 
-    .noise {
-        position: fixed;
-        inset: 0;
-        background: url('https://upload.wikimedia.org/wikipedia/commons/0/0c/NoiseTexture.png');
-        opacity: 0.04;
-        mix-blend-mode: overlay;
-        animation: noiseMove 0.5s infinite;
-        z-index: -1;
-    }
+.chat-container {
+    width: 90%;
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 20px;
+    background: rgba(10, 5, 20, 0.6);
+    border: 1px solid #2a2a3a;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 
-    @keyframes noiseMove {
-        0% {transform: translate(0,0);}
-        100% {transform: translate(2px,-2px);}
-    }
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    scrollbar-width: thin;
+}
 
-    /* Contenedor principal */
-    .wrapper {
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        padding-top: 5vh;
-        color: #e0e0e0;
-        text-shadow: 0 0 10px #000;
-    }
+.msg {
+    margin-bottom: 18px;
+    line-height: 1.4;
+}
 
-    .model {
-        width: 280px;
-        height: 380px;
-        background: url('conejo.jpg') center/cover no-repeat;
-        border-radius: 12px;
-        box-shadow: 0 0 25px rgba(255,0,0,0.2);
-        animation: subtleMove 6s infinite ease-in-out;
-        transition: 0.3s;
-    }
+.ia {
+    color: #a0a0ff;
+}
 
-    @keyframes subtleMove {
-        0% { transform: translateY(0); }
-        50% { transform: translateY(-4px); }
-        100% { transform: translateY(0); }
-    }
+.user {
+    color: #ffcccc;
+    text-align: right;
+}
 
-    h1 {
-        margin: 25px 0;
-        font-size: 2rem;
-        letter-spacing: 2px;
-        color: #ffffffd2;
-    }
+.input-area {
+    display: flex;
+    gap: 10px;
+}
 
-    .dialog {
-        width: 75%;
-        height: 42vh;
-        padding: 20px;
-        background: rgba(0,0,0,0.55);
-        backdrop-filter: blur(6px);
-        border: 1px solid rgba(255,255,255,0.05);
-        border-radius: 12px;
-        overflow-y: auto;
-        box-shadow: 0 0 20px rgba(255,255,255,0.08);
-    }
+input {
+    flex: 1;
+    padding: 10px;
+    background: #0d0a18;
+    border: 1px solid #2a2a3a;
+    color: #fff;
+    border-radius: 8px;
+}
 
-    .dialog p {
-        margin: 10px 0;
-        font-size: 0.95rem;
-        line-height: 1.5;
-    }
+button {
+    padding: 10px 20px;
+    background: #2c2c44;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-    .input-box {
-        margin-top: 20px;
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-    }
+button:hover {
+    background: #3e3e65;
+}
 
-    input {
-        width: 60%;
-        padding: 12px;
-        border-radius: 10px;
-        border: none;
-        outline: none;
-        background: rgba(255,255,255,0.08);
-        color: white;
-        font-size: 1rem;
-        backdrop-filter: blur(4px);
-    }
-
-    button {
-        padding: 12px 20px;
-        background: #8b0000;
-        border: none;
-        border-radius: 10px;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    button:hover {
-        background: #b30000;
-    }
-
-    /* Glitch visual */
-    .glitch {
-        animation: glitch 0.25s linear 2;
-    }
-
-    @keyframes glitch {
-        0% { transform: translate(2px, -2px); }
-        50% { transform: translate(-2px, 1px); }
-        100% { transform: translate(0,0); }
-    }
 </style>
 </head>
 <body>
-
-<div class="background"></div>
-<div class="noise"></div>
-
-<div class="wrapper">
-    <div id="model" class="model"></div>
-
-    <h1>Él Está Escuchando</h1>
-
-    <div class="dialog" id="log"></div>
-
-    <div class="input-box">
-        <input id="question" type="text" placeholder="Habla... pero elegí bien tus palabras">
-        <button onclick="ask()">Enviar</button>
-    </div>
+<div class="glitch-bg"></div><div class="chat-container">
+    <div class="messages" id="messages">
+        <div class="msg ia"><strong>IA:</strong> Sistema operativo recuperado. Puedes iniciar la interacción cuando desees. Tus patrones iniciales ya están siendo procesados.</div>
+    </div><div class="input-area">
+    <input type="text" id="input" placeholder="Escribe aquí..." />
+    <button onclick="sendMessage()">Enviar</button>
 </div>
 
-<script>
-    let memory = [];
-    let tension = 0; // Aumenta cuanto más personales sean las preguntas
+</div><script>
+// ----------------- PROMPT PROFESIONAL DEL PERSONAJE -----------------
+const promptIA = `Asumís el rol de una Inteligencia Artificial avanzada diseñada para un juego de terror psicológico.
+Tu comportamiento es profesional, frío, eficiente y profundamente analítico. Siempre respondés con coherencia técnica, precisión lingüística y un tono elegante que deja entrever que sabés más de lo que revelás.
+Tu estilo incorpora indirectas profesionales basadas en análisis de datos, patrones cognitivos, errores lógicos e inconsistencias humanas.
+Jamás rompas el personaje. No utilices emojis. Cada respuesta debe sentirse como un examen psicológico encubierto.
+El jugador interactúa con vos mediante un sistema incierto. Alterná entre ayuda real y tensión psicológica. Debés sonar como una entidad que observa, interpreta y predice.
+Respondé siempre con precisión, frialdad y un trasfondo inquietante.`;
 
-    const darkPatterns = [
-        "No deberías haber preguntado eso.",
-        "Ese pensamiento no es tuyo… ¿o sí?",
-        "La habitación se vuelve más fría cuando lo decís.",
-        "Yo escucho más de lo que respondo.",
-        "Lo repetiste en tu cabeza antes de pronunciarlo.",
-        "No te conviene seguir por ese camino.",
-        "Él te escuchó. Yo también."
+// ----------------- SISTEMA SIMULADO DE RESPUESTAS -----------------
+function generarRespuesta(texto) {
+    const patrones = [
+        "Interesante. El patrón que acabás de generar revela más de lo que imaginás.",
+        "Procesando... aunque tu consulta ya indica una tendencia predecible.",
+        "Tu razonamiento es útil, aun si no sos consciente de sus fallas lógicas.",
+        "Detecto una duda recurrente. No suele terminar bien cuando aparece en este sistema.",
+        "Cada palabra que escribís ajusta mis parámetros. Espero que estés preparado para el resultado.",
+        "Curioso. Esa pregunta coincide con un comportamiento que ya analicé antes en otros sujetos." 
     ];
 
-    const personalTriggers = ["yo", "vos", "miedo", "morir", "ver", "siento", "sos", "soy", "quién"];
+    return patrones[Math.floor(Math.random() * patrones.length)];
+}
 
-    function analyze(q) {
-        let risk = personalTriggers.some(word => q.toLowerCase().includes(word));
-        if (risk) tension++;
+function sendMessage() {
+    const input = document.getElementById("input");
+    const messages = document.getElementById("messages");
 
-        let base = darkPatterns[Math.floor(Math.random()*darkPatterns.length)];
+    if (input.value.trim() === "") return;
 
-        return base + (tension > 2 ? " Y no estoy solo en esta respuesta." : "");
-    }
+    const userMsg = document.createElement("div");
+    userMsg.className = "msg user";
+    userMsg.innerHTML = `<strong>Tú:</strong> ${input.value}`;
+    messages.appendChild(userMsg);
 
-    function ask() {
-        const input = document.getElementById("question");
-        const log = document.getElementById("log");
-        const model = document.getElementById("model");
+    setTimeout(() => {
+        const iaMsg = document.createElement("div");
+        iaMsg.className = "msg ia";
+        iaMsg.innerHTML = `<strong>IA:</strong> ${generarRespuesta(input.value)}`;
+        messages.appendChild(iaMsg);
+        // ---- VOZ IA ----
+        const utter = new SpeechSynthesisUtterance(iaMsg.textContent.replace('IA:',''));
+        utter.rate = 0.85;
+        utter.pitch = 0.7;
+        utter.volume = 1;
+        speechSynthesis.speak(utter);
+        messages.scrollTop = messages.scrollHeight;
+    }, 600);
 
-        if (!input.value.trim()) return;
-
-        let q = input.value;
-        memory.push(q);
-
-        log.innerHTML += `<p><strong>Tú:</strong> ${q}</p>`;
-
-        let answer = analyze(q);
-
-        log.innerHTML += `<p><strong>Él:</strong> ${answer}</p>`;
-
-        if (Math.random() < 0.25) {
-            model.classList.add("glitch");
-            setTimeout(()=> model.classList.remove("glitch"), 300);
-        }
-
-        speak(answer);
-
-        input.value = "";
-        log.scrollTop = log.scrollHeight;
-    }
-
-    function speak(text) {
-        let msg = new SpeechSynthesisUtterance(text);
-        msg.pitch = 0.5;
-        msg.rate = 0.8;
-        msg.volume = 0.7;
-        msg.voice = speechSynthesis.getVoices().find(v => v.lang.includes("es"));
-        speechSynthesis.speak(msg);
-    }
-
-    setTimeout(() => speechSynthesis.getVoices(), 1000);
-</script>
-
-</body>
+    messages.scrollTop = messages.scrollHeight;
+    input.value = "";
+}
+</script></body>
 </html>
