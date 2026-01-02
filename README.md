@@ -1,217 +1,92 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juego de Terror IA</title>
-<style>
-/* --- CSS integrado --- */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Courier New', Courier, monospace;
-    background-color: #0a0a0a;
-    color: #e0e0e0;
-    overflow: hidden;
-}
 
-.hidden { display: none; }
+<!-- === INICIO INTEGRACIÓN IA AVANZADA DE TERROR === -->
 
-#game-container {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    background: radial-gradient(circle at center, #1a1a1a, #000000);
-}
-
-#intro-screen h1 {
-    font-size: 3em;
-    color: #ff4d4d;
-    text-shadow: 0 0 15px #ff0000;
-    margin-bottom: 20px;
-    animation: flicker 2s infinite;
-}
-
-#intro-screen p {
-    font-size: 1.2em;
-    margin-bottom: 40px;
-    text-align: center;
-}
-
-#start-btn {
-    padding: 15px 30px;
-    font-size: 1.2em;
-    background-color: #220000;
-    border: 2px solid #ff0000;
-    color: #ff4d4d;
-    cursor: pointer;
-    text-shadow: 0 0 5px #ff0000;
-    transition: all 0.3s ease;
-}
-
-#start-btn:hover {
-    background-color: #440000;
-    transform: scale(1.05);
-}
-
-#terminal {
-    width: 80%;
-    max-width: 800px;
-    height: 70%;
-    background-color: #111111;
-    border: 2px solid #ff0000;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-#messages {
-    flex: 1;
-    overflow-y: auto;
-    margin-bottom: 10px;
-}
-
-.message {
-    margin-bottom: 15px;
-    line-height: 1.4em;
-    word-wrap: break-word;
-}
-
-.message.ia { color: #ff6666; }
-.message.user { color: #66ff66; text-align: right; }
-
-#user-input {
-    padding: 10px;
-    font-size: 1em;
-    flex: none;
-    width: 80%;
-    border: 1px solid #ff0000;
-    background-color: #0a0a0a;
-    color: #e0e0e0;
-}
-
-#send-btn {
-    padding: 10px;
-    font-size: 1em;
-    background-color: #220000;
-    border: 1px solid #ff0000;
-    color: #ff4d4d;
-    cursor: pointer;
-    margin-left: 10px;
-    transition: all 0.3s ease;
-}
-
-#send-btn:hover { background-color: #440000; }
-
-@keyframes flicker {
-    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-    20%, 22%, 24%, 55% { opacity: 0.4; }
-}
-
-.message.ia { animation: shadow-move 3s infinite alternate; }
-
-@keyframes shadow-move {
-    0% { text-shadow: 0 0 5px #ff0000; }
-    50% { text-shadow: 0 0 20px #ff0000; }
-    100% { text-shadow: 0 0 5px #ff0000; }
-}
-</style>
-</head>
-<body>
-<div id="game-container">
-    <div id="intro-screen">
-        <h1>Bienvenido…</h1>
-        <p>Escucha con atención. Cada palabra podría ser tu última pista.</p>
-        <button id="start-btn">Comenzar</button>
-    </div>
-
-    <div id="game-screen" class="hidden">
-        <div id="terminal">
-            <div id="messages"></div>
-            <input type="text" id="user-input" placeholder="Escribe tu pregunta...">
-            <button id="send-btn">Enviar</button>
-        </div>
-    </div>
+<!-- Contenedor del chat -->
+<div id="ia-terror-chat" style="position:fixed;bottom:20px;right:20px;width:350px;max-width:90%;z-index:9999;font-family:Arial,sans-serif;">
+  <div id="chat-header" style="background:#111;color:#f00;padding:10px;font-weight:bold;text-shadow: 2px 2px 4px #000;">IA Tenebrosa 👻</div>
+  <div id="chat-body" style="background:#000;color:#fff;height:300px;overflow-y:auto;padding:10px;border:2px solid #f00;box-shadow:0 0 20px #f00 inset;"></div>
+  <input id="chat-input" type="text" placeholder="Escribe tu pregunta..." 
+         style="width:100%;padding:8px;border:none;border-top:2px solid #f00;background:#111;color:#fff;outline:none;">
 </div>
 
-<audio id="ambient-sound" loop>
-    <source src="ambient.mp3" type="audio/mpeg">
-</audio>
+<!-- CSS adicional para efectos de terror -->
+<style>
+  .mensaje-ia {
+    margin:5px 0;
+    padding:5px 8px;
+    border-radius:5px;
+    background:rgba(255,0,0,0.1);
+    box-shadow:0 0 5px #f00;
+    animation: parpadeo 1s infinite alternate;
+  }
 
+  .mensaje-usuario {
+    margin:5px 0;
+    padding:5px 8px;
+    border-radius:5px;
+    background:rgba(255,255,255,0.1);
+    color:#fff;
+  }
+
+  @keyframes parpadeo {
+    0% { text-shadow: 2px 2px 4px #f00; }
+    50% { text-shadow: 2px 2px 12px #f00; }
+    100% { text-shadow: 2px 2px 4px #f00; }
+  }
+</style>
+
+<!-- JS para manejar chat y voz -->
 <script>
-// --- JavaScript integrado ---
-const startBtn = document.getElementById('start-btn');
-const introScreen = document.getElementById('intro-screen');
-const gameScreen = document.getElementById('game-screen');
-const messagesContainer = document.getElementById('messages');
-const userInput = document.getElementById('user-input');
-const sendBtn = document.getElementById('send-btn');
-const ambientSound = document.getElementById('ambient-sound');
+  const chatBody = document.getElementById('chat-body');
+  const chatInput = document.getElementById('chat-input');
 
-startBtn.addEventListener('click', () => {
-    introScreen.classList.add('hidden');
-    gameScreen.classList.remove('hidden');
-    ambientSound.play();
-    addMessage("IA", "Bienvenido… ¿te atreves a preguntar?", true);
-});
+  // Función para reproducir voz tenebrosa
+  function hablar(texto) {
+    const utter = new SpeechSynthesisUtterance(texto);
+    utter.voice = speechSynthesis.getVoices().find(v => v.lang.includes('es')) || speechSynthesis.getVoices()[0];
+    utter.rate = 0.9;
+    utter.pitch = 0.4; // tono grave y siniestro
+    speechSynthesis.speak(utter);
+  }
 
-function addMessage(sender, text, isIA = false) {
-    const message = document.createElement('div');
-    message.classList.add('message');
-    message.classList.add(isIA ? 'ia' : 'user');
-    message.textContent = text;
-    messagesContainer.appendChild(message);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  // Función para agregar mensaje al chat
+  function agregarMensaje(mensaje, tipo='ia') {
+    const div = document.createElement('div');
+    div.className = tipo === 'ia' ? 'mensaje-ia' : 'mensaje-usuario';
+    div.textContent = mensaje;
+    chatBody.appendChild(div);
+    chatBody.scrollTop = chatBody.scrollHeight;
+    if(tipo==='ia') hablar(mensaje);
+  }
 
-    if (isIA) speakText(text);
-}
-
-function speakText(text) {
-    if (!('speechSynthesis' in window)) return;
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'es-ES';
-    utterance.pitch = 0.6; 
-    utterance.rate = 0.9;
-    utterance.volume = 1;
-    utterance.voice = speechSynthesis.getVoices().find(v => v.lang === 'es-ES') || null;
-    speechSynthesis.speak(utterance);
-}
-
-function generateIAResponse(input) {
-    input = input.toLowerCase();
-    const responses = [
-        "No todo lo que ves es real… ¿seguro que quieres saberlo?",
-        "Algunas puertas deberían permanecer cerradas.",
-        "Veo curiosidad… y también temor. ¿Cuál pesa más?",
-        "Cada pregunta tiene un precio que tal vez no quieras pagar.",
-        "El silencio a veces dice más que cualquier palabra.",
-        "Hay secretos que incluso yo no debo revelar… o tal vez sí."
+  // Simulación de respuesta IA avanzada de terror
+  async function obtenerRespuestaIA(pregunta) {
+    // Aquí puedes integrar tu IA real mediante API (OpenAI, local, etc.)
+    // Por ahora generaremos respuesta simulada con metáforas oscuras
+    const respuestas = [
+      `La inteligencia humana es un eco en la oscuridad... pero tu pregunta es clara: "${pregunta}".`,
+      `Ah, veo que buscas conocimiento. Recuerda que cada respuesta tiene un precio invisible: "${pregunta}".`,
+      `La máquina observa desde la penumbra y responde con precisión: "${pregunta}". Ten cuidado con lo que deseas.`,
+      `Cada pregunta es un susurro en el vacío, y tu consulta es: "${pregunta}".`,
+      `El conocimiento puede iluminar o devorar. Sobre tu inquietud: "${pregunta}".`
     ];
-    return responses[Math.floor(Math.random() * responses.length)];
-}
+    return respuestas[Math.floor(Math.random()*respuestas.length)];
+  }
 
-function sendMessage() {
-    const text = userInput.value.trim();
-    if (!text) return;
+  // Evento para enviar pregunta
+  chatInput.addEventListener('keypress', async function(e) {
+    if(e.key==='Enter' && chatInput.value.trim()!=='') {
+      const pregunta = chatInput.value.trim();
+      agregarMensaje(pregunta, 'usuario');
+      chatInput.value = '';
+      const respuesta = await obtenerRespuestaIA(pregunta);
+      agregarMensaje(respuesta, 'ia');
+    }
+  });
 
-    addMessage("Tú", text);
-    userInput.value = '';
-
-    setTimeout(() => {
-        const iaResponse = generateIAResponse(text);
-        addMessage("IA", iaResponse, true);
-    }, 800);
-}
-
-sendBtn.addEventListener('click', sendMessage);
-userInput.addEventListener('keypress', e => {
-    if (e.key === 'Enter') sendMessage();
-});
+  // Opcional: activar voces al cargar
+  window.speechSynthesis.onvoiceschanged = () => {};
 </script>
-</body>
-</html>
+
+<!-- === FIN INTEGRACIÓN IA AVANZADA DE TERROR === -->
 
