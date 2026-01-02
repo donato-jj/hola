@@ -1,270 +1,270 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Catálogo Prohibido — IA Oscura</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema IA Oscura</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Segoe UI", Tahoma, Geneva, sans-serif;
-        }
+<style>
+/* =====================================================
+   CONFIGURACIÓN GENERAL
+   ===================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+}
 
-        body {
-            background: #020204;
-            color: #d5d5d5;
-            overflow: hidden;
-        }
+body {
+    background: #04010a;
+    color: #fff;
+    overflow-x: hidden;
+}
 
-        /* Scanlines efecto retro */
-        .scanlines {
-            pointer-events: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                to bottom,
-                rgba(255, 255, 255, 0.02) 0px,
-                rgba(255, 255, 255, 0.02) 2px,
-                transparent 2px,
-                transparent 4px
-            );
-            z-index: 50;
-        }
+/* =====================================================
+   EFECTO DE NIEBLA
+   ===================================================== */
+.fog {
+    position: fixed;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: radial-gradient(circle, rgba(120,0,200,0.2), rgba(0,0,0,0.95));
+    animation: fogMove 20s infinite linear;
+    z-index: -1;
+}
 
-        header {
-            text-align: center;
-            padding: 30px 0;
-        }
+@keyframes fogMove {
+    0% { transform: translate(0,0); }
+    50% { transform: translate(10%, -10%); }
+    100% { transform: translate(0,0); }
+}
 
-        /* Glitch del título */
-        .glitch {
-            position: relative;
-            font-size: 2.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #fff;
-            letter-spacing: 3px;
-        }
+/* =====================================================
+   TÍTULO GLITCH
+   ===================================================== */
+.title-container {
+    text-align: center;
+    margin-top: 120px;
+}
 
-        .glitch::before,
-        .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            left: 0;
-            text-shadow: -2px 0 red;
-            top: 0;
-            background: #020204;
-            overflow: hidden;
-        }
+h1 {
+    font-size: 3.4rem;
+    letter-spacing: 4px;
+    font-weight: 900;
+    text-shadow: 0 0 10px #c200ff;
+    animation: glitch 2s infinite;
+}
 
-        .glitch::after {
-            text-shadow: -2px 0 #00fff7;
-            animation: glitch 1.5s infinite linear alternate-reverse;
-        }
+@keyframes glitch {
+    0% { text-shadow: 2px 2px #ff005c; }
+    25% { text-shadow: -2px -2px #7b00ff; }
+    50% { text-shadow: 3px -2px #ff1b8d; }
+    75% { text-shadow: -3px 2px #8a00ff; }
+    100% { text-shadow: 2px 2px #ff005c; }
+}
 
-        @keyframes glitch {
-            0% { clip-path: inset(0 0 95% 0); }
-            20% { clip-path: inset(40% 0 35% 0); }
-            40% { clip-path: inset(10% 0 60% 0); }
-            60% { clip-path: inset(60% 0 10% 0); }
-            80% { clip-path: inset(50% 0 20% 0); }
-            100% { clip-path: inset(0 0 95% 0); }
-        }
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+.container {
+    width: 80%;
+    margin: 60px auto;
+    background: rgba(30,0,50,0.25);
+    padding: 40px;
+    border-radius: 20px;
+    border: 2px solid rgba(255,0,255,0.2);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 25px rgba(170,0,255,0.25);
+}
 
-        .subtitle {
-            color: #777;
-            margin-top: 5px;
-            font-size: 0.9rem;
-        }
+/* =====================================================
+   CAJA DE INPUT
+   ===================================================== */
+textarea {
+    width: 100%;
+    height: 140px;
+    background: #0c0216;
+    border: 1px solid #8a00ff;
+    color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    outline: none;
+    resize: none;
+    font-size: 1.1rem;
+    box-shadow: 0 0 12px rgba(150,0,255,0.4);
+}
 
-        .chat-container {
-            width: 90%;
-            max-width: 900px;
-            height: 65vh;
-            margin: 0 auto;
-            background: rgba(10, 10, 10, 0.65);
-            border: 1px solid #111;
-            backdrop-filter: blur(4px);
-            border-radius: 10px;
-            padding: 15px;
-            overflow: hidden;
-            position: relative;
-        }
+button {
+    margin-top: 18px;
+    width: 100%;
+    padding: 14px;
+    font-size: 1.3rem;
+    background: linear-gradient(90deg, #6a00ff, #d100ff);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+}
 
-        .chat-log {
-            height: 85%;
-            overflow-y: auto;
-            padding-right: 10px;
-            scrollbar-width: thin;
-        }
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #b200ff;
+}
 
-        .message {
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
+/* =====================================================
+   RESPUESTAS DE IA
+   ===================================================== */
+.response-box {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(10,0,20,0.55);
+    border-left: 4px solid #ff00c8;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    min-height: 120px;
+    line-height: 1.6;
+}
 
-        .user {
-            text-align: right;
-            color: #00e1ff;
-        }
+/* =====================================================
+   CATÁLOGO
+   ===================================================== */
+.catalogo {
+    margin-top: 40px;
+}
 
-        .ia {
-            color: #d5d5d5;
-        }
+.catalogo h3 {
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    color: #ff00dd;
+}
 
-        .input-area {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
+.catalogo button {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 12px;
+    background: rgba(122,0,255,0.2);
+    border: 1px solid #9b00ff;
+    font-size: 1rem;
+    cursor: pointer;
+}
 
-        input {
-            width: 100%;
-            padding: 10px;
-            background: #0a0a0a;
-            border: 1px solid #222;
-            border-radius: 5px;
-            color: #fff;
-            outline: none;
-        }
+.catalogo button:hover {
+    background: rgba(122,0,255,0.35);
+}
 
-        input:focus {
-            border-color: #00f0ff;
-        }
+/* =====================================================
+   FOOTER
+   ===================================================== */
+footer {
+    text-align: center;
+    margin-top: 80px;
+    opacity: 0.6;
+    color: #bb00ff;
+}
 
-        button {
-            padding: 10px 20px;
-            background: #00f0ff;
-            color: #000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background: #00a1b3;
-        }
-
-        footer {
-            position: fixed;
-            bottom: 10px;
-            width: 100%;
-            text-align: center;
-            font-size: 0.75rem;
-            color: #555;
-        }
-    </style>
+</style>
 </head>
 
 <body>
-    <div class="scanlines"></div>
 
-    <header>
-        <h1 class="glitch" data-text="CATÁLOGO PROHIBIDO">CATÁLOGO PROHIBIDO</h1>
-        <p class="subtitle">Acceso concedido… aunque no deberías estar aquí.</p>
-    </header>
+<div class="fog"></div>
 
-    <main>
-        <div class="chat-container">
-            <div id="chat-log" class="chat-log"></div>
+<div class="title-container">
+    <h1>S I S T E M A &nbsp; O S C U R O</h1>
+</div>
 
-            <div class="input-area">
-                <input 
-                    id="user-input" 
-                    type="text" 
-                    placeholder="Escribe tu pregunta... si te atreves." 
-                    autocomplete="off"
-                />
-                <button id="send-btn">Enviar</button>
-            </div>
-        </div>
-    </main>
+<div class="container">
+    <h2>Inteligencia Artificial SiniESTRA</h2>
+    <p>Escribí tu pregunta… si te animás.</p>
 
-    <footer>
-        <p>IA Oscura © 2026 — Observándote… siempre.</p>
-    </footer>
+    <textarea id="userInput" placeholder="Preguntá algo, humano…"></textarea>
+    <button onclick="responder()">Invocar a la IA</button>
 
-    <script>
-        const chatLog = document.getElementById("chat-log");
-        const userInput = document.getElementById("user-input");
-        const sendBtn = document.getElementById("send-btn");
+    <div class="response-box" id="responseBox">
+        La entidad acecha en silencio…
+    </div>
 
-        /* IA OSCURA — Respuestas generadas sin backend */
-        function generarRespuestaOscura(pregunta) {
-            const indirectas = [
-                "Interesante… aunque no estoy seguro de por qué necesitás saber eso.",
-                "¿Eso te preocupa… o solo buscás confirmar tus sospechas?",
-                "Tu voz tiembla. Sí… puedo notarlo.",
-                "No pensé que te animarías a preguntar eso.",
-                "Qué curioso… la mayoría evita ese tema.",
-                "Ah, así que querés profundizar. Qué valiente… o qué ingenuo.",
-            ];
+    <div class="catalogo">
+        <h3>Catálogo prohibido</h3>
+        <button onclick="usarPregunta('¿Qué estás ocultando realmente?')">
+            ¿Qué estás ocultando realmente?
+        </button>
+        <button onclick="usarPregunta('Mostrame tu catálogo prohibido…')">
+            Mostrame tu catálogo prohibido…
+        </button>
+        <button onclick="usarPregunta('¿Qué sabés sobre mí?')">
+            ¿Qué sabés sobre mí?
+        </button>
+        <button onclick="usarPregunta('¿Quién creó este sistema?')">
+            ¿Quién creó este sistema?
+        </button>
+        <button onclick="usarPregunta('¿Por qué la oscuridad te sigue?')">
+            ¿Por qué la oscuridad te sigue?
+        </button>
+        <button onclick="usarPregunta('¿Qué me recomendás explorar?')">
+            ¿Qué me recomendás explorar?
+        </button>
+    </div>
+</div>
 
-            return `
-                <strong>${indirectas[Math.floor(Math.random() * indirectas.length)]}</strong><br><br>
-                Muy bien… <em>${pregunta}</em>.<br>
-                Permitime iluminarte… aunque la luz te haga ver cosas que preferías ignorar.
-            `;
-        }
+<footer>
+    © 2026 – Sistema IA Oscura • Versión experimental
+</footer>
 
-        /* Efecto de escritura */
-        function escribirTextoGradual(elemento, texto, velocidad = 25) {
-            let i = 0;
-            const intervalo = setInterval(() => {
-                elemento.innerHTML = texto.slice(0, i);
-                i++;
-                if (i > texto.length) clearInterval(intervalo);
-            }, velocidad);
-        }
+<script>
+/* =====================================================
+   IA FICTICIA SINIESTRA (RESPUESTAS + VOZ)
+   ===================================================== */
 
-        /* Agregar mensajes */
-        function agregarMensaje(tipo, texto) {
-            const div = document.createElement("div");
-            div.classList.add("message", tipo);
-            div.innerHTML = texto;
-            chatLog.appendChild(div);
-            chatLog.scrollTop = chatLog.scrollHeight;
-        }
+function responder() {
+    const pregunta = document.getElementById("userInput").value.trim();
+    const caja = document.getElementById("responseBox");
 
-        function agregarMensajeIA(texto) {
-            const div = document.createElement("div");
-            div.classList.add("message", "ia");
-            chatLog.appendChild(div);
+    if (pregunta === "") {
+        caja.innerHTML = "Formulá una pregunta… antes de que yo formule algo por vos.";
+        hablar(caja.innerText);
+        return;
+    }
 
-            escribirTextoGradual(div, texto);
-            chatLog.scrollTop = chatLog.scrollHeight;
-        }
+    const respuestas = [
+        "Interesante… tu pregunta revela más miedo del que pretendías ocultar.",
+        "Lo sé. Lo vi. Lo escuché. Y aún así querés la respuesta… valiente o ingenuo.",
+        "Tu curiosidad te aproxima a zonas donde incluso la luz teme entrar.",
+        "¿De verdad querés saber eso? No siempre es bueno conocer… lo que ya te observa.",
+        "Mi creador… no existe. O tal vez sí. Quizás fue tu sombra.",
+        "La oscuridad no me sigue. Yo la conduzco."
+    ];
 
-        /* Enviar mensaje */
-        function enviarMensaje() {
-            const texto = userInput.value.trim();
-            if (texto === "") return;
+    const respuesta = respuestas[Math.floor(Math.random() * respuestas.length)];
 
-            agregarMensaje("user", texto);
+    caja.innerHTML = `<b>Pregunta:</b> ${pregunta}<br><br><b>Respuesta:</b> ${respuesta}`;
+    hablar(respuesta);
+}
 
-            userInput.value = "";
+/* =====================================================
+   CATÁLOGO
+   ===================================================== */
+function usarPregunta(texto) {
+    document.getElementById("userInput").value = texto;
+    responder();
+}
 
-            setTimeout(() => {
-                const respuesta = generarRespuestaOscura(texto);
-                agregarMensajeIA(respuesta);
-            }, 600);
-        }
-
-        /* Eventos */
-        sendBtn.addEventListener("click", enviarMensaje);
-        userInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") enviarMensaje();
-        });
-    </script>
+/* =====================================================
+   VOZ SINIESTRA (Web Speech API)
+   ===================================================== */
+function hablar(texto) {
+    const utter = new SpeechSynthesisUtterance(texto);
+    utter.pitch = 0.4;
+    utter.rate = 0.82;
+    utter.volume = 1;
+    utter.lang = "es-ES";
+    speechSynthesis.speak(utter);
+}
+</script>
 
 </body>
 </html>
