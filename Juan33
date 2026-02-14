@@ -1,251 +1,199 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Proyecto NEXUS – Guerra en el Futuro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Experiencia Visual Profesional</title>
+
 <style>
+/* ===== RESET PROFESIONAL ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
 body {
-    margin:0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: radial-gradient(circle, #02070d, #000000);
-    color:white;
+    background: linear-gradient(135deg, #0f0f0f, #1b1b1b);
+    color: white;
+    overflow-x: hidden;
 }
 
-#gameContainer {
-    width: 900px;
-    margin: auto;
-    margin-top: 20px;
-    background: rgba(0,0,0,0.6);
-    border: 2px solid cyan;
-    box-shadow: 0 0 25px cyan;
-    padding: 15px;
-    border-radius: 10px;
-}
-
-h1 {
-    text-align:center;
-    color: #00f7ff;
-    text-shadow: 0 0 15px cyan;
-}
-
-#story {
-    font-size: 15px;
-    padding:10px;
-    background: rgba(0,255,255,0.1);
-    border:1px solid cyan;
-    border-radius:6px;
-}
-
-#gameArea {
-    width: 900px;
-    height: 400px;
-    background: linear-gradient(#01131f,#022b49);
-    border: 2px solid cyan;
-    margin-top: 20px;
+/* ===== HEADER ===== */
+header {
     position: relative;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+header h1 {
+    font-size: 3rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    background: linear-gradient(90deg, #ffffff, #aaaaaa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ===== IMAGEN HERO ===== */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 90vh;
     overflow: hidden;
-    border-radius: 10px;
-    box-shadow: inset 0 0 30px cyan;
 }
 
-.player {
-    width: 30px;
-    height: 30px;
-    background: lime;
-    box-shadow:0 0 15px lime;
+.hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(70%) contrast(110%);
+    transition: 0.5s ease;
+}
+
+.hero:hover img {
+    transform: scale(1.05);
+    filter: brightness(80%);
+}
+
+/* ===== OVERLAY ===== */
+.overlay {
     position: absolute;
-    bottom:0;
+    bottom: 40px;
+    left: 40px;
+    max-width: 500px;
 }
 
-.enemy {
-    width: 30px;
-    height: 30px;
-    background: red;
-    box-shadow:0 0 20px red;
-    position: absolute;
+.overlay h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
 }
 
-#aiBox {
-    margin-top:20px;
-    padding:10px;
-    border: 1px solid cyan;
-    border-radius:8px;
-    background: rgba(0,255,255,0.1);
+.overlay p {
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 0.8;
 }
 
-#aiText {
-    color:#00ffff;
+/* ===== SECCIÓN PROFESIONAL ===== */
+.section {
+    padding: 80px 10%;
+    text-align: center;
 }
 
-button {
-    padding:10px 15px;
-    background:black;
-    border:1px solid cyan;
-    color:white;
-    cursor:pointer;
-    transition:0.3s;
+.section h3 {
+    font-size: 2rem;
+    margin-bottom: 20px;
 }
 
-button:hover {
-    background:cyan;
-    color:black;
-    box-shadow:0 0 15px cyan;
+.section p {
+    max-width: 700px;
+    margin: auto;
+    line-height: 1.8;
+    opacity: 0.8;
 }
 
-#hud {
-    margin-top:10px;
-    font-size: 18px;
+/* ===== CANVAS PROFESIONAL ===== */
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+/* ===== FOOTER ===== */
+footer {
+    text-align: center;
+    padding: 30px;
+    opacity: 0.4;
+    font-size: 0.9rem;
 }
 </style>
 </head>
 
 <body>
 
-<div id="gameContainer">
+<canvas id="bgCanvas"></canvas>
 
-<h1>PROYECTO NEXUS</h1>
+<header>
+    <h1>Composición Visual Estratégica</h1>
+</header>
 
-<div id="story">
-Año 2179.  
-La humanidad depende de mega corporaciones de Biotecnología e Inteligencia Artificial para sobrevivir.
-Vos sos parte de la unidad científica <b>NEXUS</b>. Tu misión:
-penetrar en la ciudad digital dominada por IAs rebeldes, virus conscientes
-y criaturas biotecnológicas creadas por error humano.
-Sobreviví. Evolucioná. No falles… porque el futuro depende de vos.
-</div>
+<section class="hero">
+    <img src="20260214_141641.jpg" alt="Imagen Profesional">
+    <div class="overlay">
+        <h2>Presencia. Actitud. Desafío.</h2>
+        <p>
+            Una narrativa visual construida desde la seguridad, el control y la postura.
+            La imagen comunica carácter, equilibrio emocional y una intención ambigua
+            que desafía al observador.
+        </p>
+    </div>
+</section>
 
-<div id="hud">
-<b>Unidad Operativa:</b> ONLINE | <b>Progreso:</b> <span id="score">0</span>
-</div>
+<section class="section">
+    <h3>Lectura Visual Profesional</h3>
+    <p>
+        La iluminación tenue enfatiza el contraste, mientras que la postura transmite
+        determinación. La expresión proyecta confianza y una invitación implícita
+        al enfrentamiento simbólico.
+    </p>
+</section>
 
-<div id="gameArea">
-    <div id="player" class="player"></div>
-</div>
-
-<div id="aiBox">
-<b>IA Asistente NEXUS:</b>
-<p id="aiText">Unidad Nexus activa. Estoy contigo, humano. Demostremos que todavía valemos.</p>
-</div>
-
-<button onclick="startGame()">Iniciar Misión</button>
-
-</div>
+<footer>
+    2026 © Diseño Visual Estratégico
+</footer>
 
 <script>
-let player = document.getElementById("player");
-let gameArea = document.getElementById("gameArea");
-let scoreText = document.getElementById("score");
-let aiText = document.getElementById("aiText");
+// ===== CANVAS ANIMADO PROFESIONAL =====
+const canvas = document.getElementById("bgCanvas");
+const ctx = canvas.getContext("2d");
 
-let gameInterval;
-let enemyInterval;
-let score = 0;
-let gameRunning = false;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-function speak(text){
-    let msg = new SpeechSynthesisUtterance(text);
-    msg.lang = "es-ES";
-    window.speechSynthesis.speak(msg);
+let particles = [];
+
+for (let i = 0; i < 100; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 2,
+        speedX: (Math.random() - 0.5) * 0.5,
+        speedY: (Math.random() - 0.5) * 0.5
+    });
 }
 
-const enemiesLore = [
-{ name:"VIRUS OMEGA", desc:"Un virus digital autoconsciente creado por fallos de Big Data."},
-{ name:"SYN-CORE AI", desc:"Una inteligencia artificial que decidió que los humanos somos ineficientes."},
-{ name:"BIO-TERROR MK3", desc:"Criatura biotecnológica creada por manipulación genética ilegal."},
-{ name:"DRONE CERBERUS", desc:"Sistema de defensa autónomo diseñado para eliminar humanos."}
-];
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "rgba(255,255,255,0.2)";
+    
+    particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
 
-const knowledge = [
-"El Big Data permite analizar cantidades inmensas de información para predecir comportamientos… incluso humanos, si se usa mal.",
-"Las redes neuronales funcionan como un cerebro simplificado: aprenden patrones, fallan, mejoran… y algunas veces se rebelan.",
-"La biotecnología del futuro podría crear órganos, curar enfermedades… o crear monstruos fuera de control.",
-"La ética de la IA es vital. Una IA sin límites puede decidir eliminar lo que considera defectuoso: nosotros."
-];
+        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
 
-let playerPos = 0;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+    });
 
-document.addEventListener("keydown", e=>{
-    if(!gameRunning) return;
-    if(e.key === "ArrowLeft" && playerPos > 0) playerPos-=10;
-    if(e.key === "ArrowRight" && playerPos < 870) playerPos+=10;
-    player.style.left = playerPos + "px";
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+// ===== MENSAJE OCULTO =====
+document.addEventListener("keydown", function(e) {
+    if (e.key === "v") {
+        console.log("vení intenta lastimarme");
+    }
 });
-
-function startGame(){
-    resetGame();
-    aiSpeak("La misión comienza ahora. No mueras. Todavía te necesito.");
-    gameRunning = true;
-
-    gameInterval = setInterval(()=>{
-        score++;
-        scoreText.innerText = score;
-    },1000);
-
-    enemyInterval = setInterval(spawnEnemy, 1200);
-}
-
-function resetGame(){
-    score=0;
-    scoreText.innerText=0;
-    playerPos=400;
-    player.style.left="400px";
-    document.querySelectorAll(".enemy").forEach(e=>e.remove());
-    if(gameInterval) clearInterval(gameInterval);
-    if(enemyInterval) clearInterval(enemyInterval);
-}
-
-function spawnEnemy(){
-    let enemy = document.createElement("div");
-    enemy.classList.add("enemy");
-    enemy.style.left = Math.random()*870+"px";
-    enemy.style.top="0px";
-
-    let lore = enemiesLore[Math.floor(Math.random()*enemiesLore.length)];
-    enemy.title = lore.name + ": " + lore.desc;
-
-    gameArea.appendChild(enemy);
-
-    let fall = setInterval(()=>{
-        let top = parseInt(enemy.style.top);
-        enemy.style.top = top + 5 + "px";
-
-        if(top>360){
-            clearInterval(fall);
-            enemy.remove();
-        }
-
-        let playerRect = player.getBoundingClientRect();
-        let enemyRect = enemy.getBoundingClientRect();
-
-        if(playerRect.x < enemyRect.x + enemyRect.width &&
-           playerRect.x + playerRect.width > enemyRect.x &&
-           playerRect.y < enemyRect.y + enemyRect.height &&
-           playerRect.height + playerRect.y > enemyRect.y){
-               loseGame(lore);
-               clearInterval(fall);
-               enemy.remove();
-        }
-
-    },30);
-}
-
-function aiSpeak(text){
-    aiText.innerText=text;
-    speak(text);
-}
-
-function loseGame(enemy){
-    gameRunning=false;
-    clearInterval(gameInterval);
-    clearInterval(enemyInterval);
-
-    let lesson = knowledge[Math.floor(Math.random()*knowledge.length)];
-
-    aiSpeak(
-        "Fallaste. El enemigo " + enemy.name +
-        " te eliminó. Escucha humano: " + lesson
-    );
-}
 </script>
 
 </body>
